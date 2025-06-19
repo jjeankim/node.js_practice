@@ -33,10 +33,68 @@ const books = [
 ];
 
 app.get("/books", (req, res) => {
-  res.send(books);
+  res.json(books);
+});
+
+app.get("/books/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  const book = books.find((book) => book.id === id);
+  if (book) res.json(book);
+  else {
+    res.status(404).json({ message: "Cannot find given id" });
+  }
+});
+
+app.post("/books", (req, res) => {
+  const { title, author } = req.body;
+  const newBook = {
+    id: books.length + 1,
+    title,
+    author,
+  };
+
+  books.push(newBook);
+  res.status(201).json(newBook);
+});
+
+app.put("/books/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const { title, author } = req.body;
+  const book = books.find((book) => book.id === id);
+
+  if (!book) res.status(404).json({ message: "Cannat find given id" });
+
+  book.title = title;
+  book.author = author;
+  res.json(book);
+});
+
+app.patch("/books/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const book = books.find((book) => book.id === id);
+
+  if (!book) es.status(404).json({ message: "Cannot find given id" });
+  
+  Object.keys(req.body).forEach((key) => {
+    book[key] = req.body[key];
+  });
+
+  res.json(book);
+});
+
+app.delete("/books/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const idx = books.findIndex((book) => book.id === id);
+
+  if (idx >= 0) {
+    books.splice(idx, 1);
+    res.sendStatus(204);
+  } else {
+    res.status(404).json({ message: "Cannot find given id" });
+  }
 });
 
 app.listen(PORT, () => {
   console.log(`서버가 http://localhost${PORT}에서 실행중`);
 });
-
