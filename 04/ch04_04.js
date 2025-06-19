@@ -9,19 +9,19 @@ const memos = [
     id: 1,
     title: "회의록",
     content: "6월 18일 회의에서 프로젝트 일정 논의함",
-    createdAt: moment().format('YYYY-MM-DD'),
+    createdAt: moment().format("YYYY-MM-DD"),
   },
   {
     id: 2,
     title: "할 일 목록",
     content: "1. 보고서 작성, 2. 코드 리뷰, 3. 팀 회의",
-    createdAt: moment().format('YYYY-MM-DD'),
+    createdAt: moment().format("YYYY-MM-DD"),
   },
   {
     id: 3,
     title: "아이디어 노트",
     content: "챗봇 기능에 음성 입력 추가하면 좋을 듯",
-    createdAt: moment().format('YYYY-MM-DD'),
+    createdAt: moment().format("YYYY-MM-DD"),
   },
 ];
 
