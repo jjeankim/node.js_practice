@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "nodemon todo.js"
+    "dev": "nodemon api.js"
   },
   "dependencies": {
     "better-sqlite3": "^11.10.0",

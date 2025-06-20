@@ -29,7 +29,10 @@ app.post("/todos", (req, res) => {
    values( ?, ?)
   `;
   db.prepare(sql).run(task, description);
-  res.status(201).json({ message: "Todo 생성 성공" });
+  res.status(201).json({
+    success: true,
+    message: "Todo 생성 성공",
+  });
 });
 
 app.get("/todos", (req, res) => {
@@ -37,7 +40,11 @@ app.get("/todos", (req, res) => {
   select * from todos
   `;
   const todos = db.prepare(sql).all();
-  res.status(200).json(todos);
+  res.status(200).json({
+    success: true,
+    message: "Todos 조회 성공",
+    data: todos,
+  });
 });
 
 app.get("/todos/:id", (req, res) => {
@@ -48,7 +55,11 @@ app.get("/todos/:id", (req, res) => {
   const todo = db.prepare(sql).get(id);
 
   if (!todo) return res.status(404).json({ message: "Cannot find given id" });
-  res.status(200).json(todo);
+  res.status(200).json({
+    success: true,
+    message: "Todos 조회 성공",
+    data: todo,
+  });
 });
 
 app.put("/todos/:id", (req, res) => {
@@ -62,7 +73,10 @@ app.put("/todos/:id", (req, res) => {
 
   if (todo.changes === 0)
     return res.status(404).json({ message: "Cannot find given id" });
-  res.status(201).json({ message: "Todo 수정 성공" });
+  res.status(201).json({
+    success: true,
+    message: "Todo 수정 성공",
+  });
 });
 
 app.patch("/todos/:id", (req, res) => {

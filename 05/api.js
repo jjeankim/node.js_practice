@@ -25,16 +25,22 @@ const create_sql = `
 
 db.exec(create_sql);
 
+// 페이지네이션 : 목록 내려줄때 개수 정해서 내려줌
 app.get("/posts", (req, res) => {
+  const page = req.query.page ? Number(req.query.page) : 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
   let sql = `
-    select * from posts
+    select * from posts limit ? offset ?
   `;
-  const posts = db.prepare(sql).all();
+  const posts = db.prepare(sql).all(limit, offset);
   res.status(200).json(posts);
 });
 
 app.get("/posts/:id", (req, res) => {
   const id = Number(req.params.id);
+  const ac_sql = `update posts set count = count +1 where id = ?`;
+  db.prepare(ac_sql).run(id);
   let sql = `
    select * from posts where id = ?
   `;
