@@ -12,7 +12,7 @@ const app = express();
 const PORT = 3000;
 app.use(express.json());
 
-// 1.post.db 게시판 전용 테이블을 생성
+// post.db 게시판 전용 테이블을 생성
 const create_sql = `
   create table if not exists posts (
     id integer primary key autoincrement,
@@ -27,7 +27,7 @@ db.exec(create_sql);
 
 app.get("/posts", (req, res) => {
   let sql = `
-    select * from posts order by createdAt desc
+    select * from posts
   `;
   const posts = db.prepare(sql).all();
   res.status(200).json(posts);
@@ -61,7 +61,8 @@ app.put("/posts/:id", (req, res) => {
    update posts set title = ?, content = ? where id = ?
   `;
   db.prepare(sql).run(title, content, id);
-  res.redirect("/posts");
+  res.status(201).json({ message: "ok" });
+  // res.redirect("/posts");
 });
 
 app.delete("/posts/:id", (req, res) => {
