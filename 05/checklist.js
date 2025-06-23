@@ -55,32 +55,54 @@ app.get("/checklist", (req, res) => {
   res.status(200).json({ message: "체크리스트 조회 성공", data: checklist });
 });
 
+// app.put("/checklist/:id", (req, res) => {
+//   const { id } = req.params;
+//   const { category, item, isChecked } = req.body;
+
+//   const exiting = db.prepare(`select * from checklist where id = ?`).get(id);
+//   if (!exiting)
+//     return res
+//       .status(404)
+//       .json({ message: "해당 체크리스트 항목을 찾을 수 없습니다." });
+
+//   const updatedCategory = category !== undefined ? category : exiting.category;
+//   const updatedItem = item !== undefined ? item : exiting.item;
+//   const updatedChecked =
+//     isChecked !== undefined ? isChecked : exiting.isChecked;
+
+//   const sql = `
+//     update checklist set category = ?, item = ?, isChecked = ?, updatedAt = datetime('now')
+//     where id = ?
+//   `;
+//   db.prepare(sql).run(updatedCategory, updatedItem, updatedChecked, id);
+
+//   const updated = db.prepare(`select * from checklist where id = ?`).get(id);
+
+//   res.status(200).json({
+//     message: "체크리스트 수정 성공",
+//     data: updated,
+//   });
+// });
 app.put("/checklist/:id", (req, res) => {
   const { id } = req.params;
-  const { category, item, isChecked } = req.body;
 
-  const exiting = db.prepare(`select * from checklist where id = ?`).get(id);
-  if (!exiting)
-    return res
-      .status(404)
-      .json({ message: "해당 체크리스트 항목을 찾을 수 없습니다." });
+  const existing = db.prepare(`select * from checklist where id = ?`).get(id);
+  if (!existing) {
+    return res.status(404).json({ message: "체크리스트 항목을 찾을 수 없습니다." });
+  }
 
-  const updatedCategory = category !== undefined ? category : exiting.category;
-  const updatedItem = item !== undefined ? item : exiting.item;
-  const updatedChecked =
-    isChecked !== undefined ? isChecked : exiting.isChecked;
-
-  const sql = `
-    update checklist set category = ?, item = ?, isChecked = ?, updatedAt = datetime('now')
+  db.prepare(`
+    update checklist 
+    set isChecked = case isChecked when 1 then 0 else 1 end, 
+        updatedAt = datetime('now')
     where id = ?
-  `;
-  db.prepare(sql).run(updatedCategory, updatedItem, updatedChecked, id);
+  `).run(id);
 
-  const updated = db.prepare(`select * from checklist where id = ?`).get(id);
+  const updatedItem = db.prepare(`select * from checklist where id = ?`).get(id);
 
   res.status(200).json({
-    message: "체크리스트 수정 성공",
-    data: updated,
+    message: "체크 상태 토글 성공",
+    data: updatedItem,
   });
 });
 
