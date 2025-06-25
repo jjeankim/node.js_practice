@@ -99,20 +99,40 @@ app.get("/posts/:postId/comments", async (req, res) => {
     ],
     order: [["createdAt", "DESC"]], //최신순
   });
-  if (!comments) res.status(400).json({ message: "댓글 가져오기 실패" });
+  if (!comments) res.status(404).json({ message: "댓글 가져오기 실패" });
 
   res.status(200).json({ message: "댓글 가져오기 성공!", data: comments });
 });
 
 app.put("/posts/:postId/comments/:id", async (req, res) => {
-  const { id} = req.params;
-  const {content} = req.body;
-  
-  const comment = await models.Comment.findByPk(id);
-  if(!comment) return res.status(400).json({message:"댓글을 찾을 수 없습니다."})
-   await comment.update({
-  content})
-  res.status(200).json({message:"댓글 수정 성공!", data: comment})
+  const { id, postId } = req.params;
+  const { content } = req.body;
+
+  const comment = await models.Comment.findOne({
+    where: {
+      id,
+      postId,
+    },
+  });
+  if (!comment)
+    return res.status(404).json({ message: "댓글을 찾을 수 없습니다." });
+  await comment.update({
+    content,
+  });
+  res.status(200).json({ message: "댓글 수정 성공!", data: comment });
+});
+
+app.delete("/posts/:postId/comments/:id", async (req, res) => {
+  const { id, postId } = req.params;
+  const deleteCount = await models.Comment.destroy({
+    where: {
+      id,
+      postId,
+    },
+  });
+  if (deleteCount === 0)
+    return res.status(404).json({ message: "댓글 삭제에 실패했습니다." });
+  res.sendStatus(204);
 });
 
 // user
