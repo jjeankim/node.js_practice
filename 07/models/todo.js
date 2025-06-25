@@ -1,5 +1,5 @@
-module.exports = (Sequelize, DataTypes) => {
-  const Todo = Sequelize.define(
+module.exports = (sequelize, DataTypes) => {
+  const Todo = sequelize.define(
     "Todo",
     {
       task: {
