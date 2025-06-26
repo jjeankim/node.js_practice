@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
       fileName: {
         type: DataTypes.STRING,
       },
+      viewCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      }
     },
     {
       tableName: "posts",

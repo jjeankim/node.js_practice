@@ -1,13 +1,36 @@
 const express = require("express");
 const models = require("./models");
-const { Op, where } = require("sequelize");
+const multer = require("multer");
+const path = require("path");
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const uploadDir = "public/uploads";
+app.use("/downloads", express.static(path.join(__dirname, uploadDir)));
+
+const storage = multer.diskStorage({
+  destination: `./${uploadDir}`,
+  filename: function (req, file, cb) {
+    cb(
+      null, //error
+      path.parse(file.originalname).name +
+        "-" +
+        Date.now() +
+        path.extname(file.originalname)
+    );
+  },
+});
+
+const upload = multer({ storage });
 
 // post
-app.post("/posts", async (req, res) => {
+app.post("/posts", upload.single("file"), async (req, res) => {
   const { title, content } = req.body;
+  let fileName = req.file ? req.file.filename : null;
+
+  fileName = `/downloads/${fileName}`;
 
   let user = await models.User.findOne({
     where: {
@@ -25,6 +48,7 @@ app.post("/posts", async (req, res) => {
   const post = await models.Post.create({
     title,
     content,
+    fileName,
     authorId: user.id,
   });
 
@@ -59,6 +83,17 @@ app.put("/posts/:id", async (req, res) => {
   res.status(200).json({ message: "해당 게시글 수정 완료!", data: post });
 });
 
+app.patch("/posts/:id", async (req, res) => {
+  const { id } = req.params;
+  const post = await models.Post.findByPk(id);
+  if (!post)
+    return res.status(404).json({ message: "해당 게시글을 찾을 수 없어요." });
+  const updatedPost = await post.update({
+    viewCount: post.viewCount + 1,
+  });
+  res.status(200).json({ message: "ok", data: updatedPost });
+});
+
 app.delete("/posts/:id", async (req, res) => {
   const { id } = req.params;
   const result = await models.Post.destroy({
@@ -83,7 +118,7 @@ app.post("/posts/:postId/comments", async (req, res) => {
   const comment = await models.Comment.create({
     content,
     postId,
-    userId: 2,
+    userId: 1,
   });
   res.status(201).json({ message: "댓글 등록 성공", data: comment });
 });
@@ -135,19 +170,11 @@ app.delete("/posts/:postId/comments/:id", async (req, res) => {
   res.sendStatus(204);
 });
 
-// user
-// app.post("/users",async(req,res) => {
-//   const {name, email, password,role} =
-//   const user = await models.User.create({
-//     name,
-//   })
-// })
-
 app.listen(3000, async () => {
   await models.sequelize
     .sync({ force: false })
     .then(() => {
-      console.log("db connectes!");
+      console.log("db connects!");
     })
     .catch(() => {
       console.log("db error");
