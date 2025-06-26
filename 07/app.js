@@ -5,12 +5,10 @@ const postRouter = require("./routes/postRoute");
 const todoRouter = require("./routes/todoRoute");
 const commentRouter = require("./routes/commentsRoute");
 
-
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 app.use("/notes", noteRouter);
 app.use("/posts", postRouter);

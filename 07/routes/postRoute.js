@@ -1,10 +1,11 @@
 const express = require("express");
 const postController = require("../controllers/posts");
 const postRouter = express.Router();
+const {uploadSingle, uploadMultiple} = require('../middleware/upload')
 
 postRouter
   .route("/")
-  .post(postController.createPost)
+  .post(uploadMultiple,postController.createPost)
   .get(postController.getAllPosts);
 
   postRouter

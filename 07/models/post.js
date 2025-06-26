@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
       viewCount: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
+      },
+      attachments: {
+        type: DataTypes.JSON,
+        defaultValue: [],
       }
     },
     {

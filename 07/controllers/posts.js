@@ -2,9 +2,9 @@ const models = require("../models");
 
 exports.createPost = async (req, res) => {
   const { title, content } = req.body;
-  let fileName = req.file ? req.file.filename : null;
+  let filename = req.file ? req.file.filename : null;
 
-  fileName = `/downloads/${fileName}`;
+  filename = `/downloads/${filename}`;
 
   let user = await models.User.findOne({
     where: {
@@ -19,10 +19,31 @@ exports.createPost = async (req, res) => {
       password: "muziktiger",
     });
   }
+  let attachments = [];
+
+  if (req.file) {
+    attachments.push({
+      filename: req.file.filename,
+      originalname: req.file.originalname,
+      path: req.file.path,
+      size: req.file.size,
+      mimetype: req.file.mimetype,
+    });
+  } else if (req.files && req.files.length > 0) {
+    attachments = req.files.map((file) => ({
+      filename: file.filename,
+      orginalname: file.orginalname,
+      path: file.path,
+      size: file.size,
+      mimetype: file.mimetype,
+    }));
+  }
+
   const post = await models.Post.create({
     title,
     content,
-    fileName,
+    // filename,
+    attachments,
     authorId: user.id,
   });
 
@@ -78,4 +99,3 @@ exports.deletePost = async (req, res) => {
   if (result > 0) return res.sendStatus(204);
   else res.status(400).json({ message: "해당 게시글 삭제에 실패했습니다." });
 };
-
