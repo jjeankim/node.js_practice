@@ -170,6 +170,14 @@ app.delete("/posts/:postId/comments/:id", async (req, res) => {
   res.sendStatus(204);
 });
 
+// user
+// app.post("/users",async(req,res) => {
+//   const {name, email, password,role} =
+//   const user = await models.User.create({
+//     name,
+//   })
+// })
+
 app.listen(3000, async () => {
   await models.sequelize
     .sync({ force: false })
