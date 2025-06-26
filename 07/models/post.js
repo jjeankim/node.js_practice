@@ -7,9 +7,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         defaultValue: "",
       },
-      fileName: {
-        type: DataTypes.STRING,
-      },
       viewCount: {
         type: DataTypes.INTEGER,
         defaultValue: 0,

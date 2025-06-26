@@ -1,18 +1,18 @@
 const express = require("express");
 const postController = require("../controllers/posts");
 const postRouter = express.Router();
-const {uploadSingle, uploadMultiple} = require('../middleware/upload')
+const { uploadSingle, uploadMultiple } = require("../middleware/upload");
 
 postRouter
   .route("/")
-  .post(uploadMultiple,postController.createPost)
+  .post(uploadMultiple, postController.createPost)
   .get(postController.getAllPosts);
 
-  postRouter
+postRouter
   .route("/:id")
   .get(postController.getPost)
   .put(postController.updatePost)
   .patch(postController.updateViewCont)
   .delete(postController.deletePost);
 
-  module.exports = postRouter;
+module.exports = postRouter;

@@ -2,9 +2,9 @@ const models = require("../models");
 
 exports.createPost = async (req, res) => {
   const { title, content } = req.body;
-  let filename = req.file ? req.file.filename : null;
+  // let filename = req.file ? req.file.filename : null;
 
-  filename = `/downloads/${filename}`;
+  // filename = `/downloads/${filename}`;
 
   let user = await models.User.findOne({
     where: {
@@ -21,22 +21,33 @@ exports.createPost = async (req, res) => {
   }
   let attachments = [];
 
-  if (req.file) {
-    attachments.push({
-      filename: req.file.filename,
-      originalname: req.file.originalname,
-      path: req.file.path,
-      size: req.file.size,
-      mimetype: req.file.mimetype,
-    });
-  } else if (req.files && req.files.length > 0) {
-    attachments = req.files.map((file) => ({
-      filename: file.filename,
-      orginalname: file.orginalname,
-      path: file.path,
-      size: file.size,
-      mimetype: file.mimetype,
-    }));
+  // if (req.file) {
+  //   attachments.push({
+  //     filename: req.file.filename,
+  //     originalname: req.file.originalname,
+  //     path: req.file.path,
+  //     size: req.file.size,
+  //     mimetype: req.file.mimetype,
+  //   });
+  // } else if (req.files && req.files.length > 0) {
+  //   attachments = req.files.map((file) => ({
+  //     filename: file.filename,
+  //     orginalname: file.orginalname,
+  //     path: file.path,
+  //     size: file.size,
+  //     mimetype: file.mimetype,
+  //   }));
+  // }
+  if (req.files && res.files.length > 0) {
+    attachments = req.files.map(file => (
+      {
+        filename: file.filename,
+        originalname: file.originalname,
+        path: file.path,
+        size: file.size,
+        mimetype: file.mimetype,
+      }
+    ))
   }
 
   const post = await models.Post.create({
