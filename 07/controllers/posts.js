@@ -3,9 +3,9 @@ const models = require("../models");
 const createPost = async (req, res) => {
   const { title, content } = req.body;
   let filename = req.file ? req.file.filename : null;
-console.log(req.user);
 
   filename = `/downloads/${filename}`;
+console.log(req.user);
 
   // let user = await models.User.findOne({
   //   where: {
