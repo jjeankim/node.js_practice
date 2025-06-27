@@ -6,9 +6,11 @@ const todoRouter = require("./routes/todoRoute");
 const commentRouter = require("./routes/commentsRoute");
 const userRouter = require("./routes/userRouter");
 const authRouter = require("./routes/authRouter");
+const { logging, logger } = require("./middleware/logger");
 
 const app = express();
 
+app.use(logging);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
