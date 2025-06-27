@@ -4,6 +4,8 @@ const noteRouter = require("./routes/notesRoute");
 const postRouter = require("./routes/postRoute");
 const todoRouter = require("./routes/todoRoute");
 const commentRouter = require("./routes/commentsRoute");
+const userRouter = require("./routes/userRouter");
+const authRouter = require("./routes/authRouter");
 
 const app = express();
 
@@ -14,6 +16,8 @@ app.use("/notes", noteRouter);
 app.use("/posts", postRouter);
 app.use("/todos", todoRouter);
 app.use("/posts/:postId/comments", commentRouter);
+app.use("/users", userRouter);
+app.use("/auth", authRouter);
 
 // 404처리
 app.use((req, res) => {
@@ -24,7 +28,7 @@ app.use((req, res) => {
 
 // 500에러
 app.use((error, req, res, next) => {
-  console.log(error.stack());
+  console.log(error.stack);
   res
     .status(500)
     .json({ message: `server error : ${error.stack}`, status: "Error" });

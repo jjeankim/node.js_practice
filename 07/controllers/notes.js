@@ -1,7 +1,7 @@
 const models = require("../models");
 const { Op } = require("sequelize");
 
-exports.createNote = async (req, res) => {
+const createNote = async (req, res) => {
   const { title, content, tag } = req.body;
   const post = await models.Note.create({
     title,
@@ -13,10 +13,10 @@ exports.createNote = async (req, res) => {
   res.status(201).json({ message: "노트 생성을 성공했습니다.", data: post });
 };
 
-exports.getAllNotes = async (req, res) => {
-  const {tag} = req.query;
-  const where = tag ? { tag: {[Op.like]: `%${tag}%`}} : {};
-  const notes = await models.Note.findAll({where});
+const getAllNotes = async (req, res) => {
+  const { tag } = req.query;
+  const where = tag ? { tag: { [Op.like]: `%${tag}%` } } : {};
+  const notes = await models.Note.findAll({ where });
   if (!notes)
     return res.status(400).json({ message: "노트 목록 가져오기 실패!" });
   res.status(200).json({ message: "노트 목록 가져오기 성공!", data: notes });
@@ -36,7 +36,7 @@ exports.getAllNotes = async (req, res) => {
 //   res.status(200).json({ message: "해당 id 노트 조회 성공!", data: notes });
 // };
 
-exports.updateNote = async (req, res) => {
+const updateNote = async (req, res) => {
   const { id } = req.params;
   const { title, content, tag } = req.body;
 
@@ -55,7 +55,7 @@ exports.updateNote = async (req, res) => {
     .json({ message: "해당 노트 수정에 성공했습니다.", data: note });
 };
 
-exports.deleteNote = async (req, res) => {
+const deleteNote = async (req, res) => {
   const { id } = req.params;
 
   const result = await models.Note.destroy({
@@ -66,4 +66,11 @@ exports.deleteNote = async (req, res) => {
   if (result > 0) return res.sendStatus(204);
   else
     return res.status(400).json({ message: "해당 노트 삭제에 실패했습니다." });
+};
+
+module.exports = {
+  createNote,
+  getAllNotes,
+  updateNote,
+  deleteNote,
 };

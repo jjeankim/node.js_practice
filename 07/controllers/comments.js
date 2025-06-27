@@ -1,7 +1,6 @@
 const models = require("../models");
-const { Op } = require("sequelize");
 
-exports.createComment = async (req, res) => {
+const createComment = async (req, res) => {
   const { postId } = req.params;
   const { content } = req.body;
 
@@ -16,9 +15,9 @@ exports.createComment = async (req, res) => {
     userId: 1,
   });
   res.status(201).json({ message: "댓글 등록 성공", data: comment });
-}
+};
 
-exports.getAllComments = async (req, res) => {
+const getAllComments = async (req, res) => {
   const { postId } = req.params;
   const comments = await models.Comment.findAll({
     where: {
@@ -32,9 +31,9 @@ exports.getAllComments = async (req, res) => {
   if (!comments) res.status(404).json({ message: "댓글 가져오기 실패" });
 
   res.status(200).json({ message: "댓글 가져오기 성공!", data: comments });
-}
+};
 
-exports.updateComment = async (req, res) => {
+const updateComment = async (req, res) => {
   const { id, postId } = req.params;
   const { content } = req.body;
 
@@ -50,9 +49,9 @@ exports.updateComment = async (req, res) => {
     content,
   });
   res.status(200).json({ message: "댓글 수정 성공!", data: comment });
-}
+};
 
-exports.deleteComment = async (req, res) => {
+const deleteComment = async (req, res) => {
   const { id, postId } = req.params;
   const deleteCount = await models.Comment.destroy({
     where: {
@@ -63,5 +62,11 @@ exports.deleteComment = async (req, res) => {
   if (deleteCount === 0)
     return res.status(404).json({ message: "댓글 삭제에 실패했습니다." });
   res.sendStatus(204);
-}
+};
 
+module.exports = {
+  createComment,
+  getAllComments,
+  updateComment,
+  deleteComment,
+};

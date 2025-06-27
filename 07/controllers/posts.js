@@ -1,6 +1,6 @@
 const models = require("../models");
 
-exports.createPost = async (req, res) => {
+const createPost = async (req, res) => {
   const { title, content } = req.body;
   // let filename = req.file ? req.file.filename : null;
 
@@ -39,15 +39,13 @@ exports.createPost = async (req, res) => {
   //   }));
   // }
   if (req.files && res.files.length > 0) {
-    attachments = req.files.map(file => (
-      {
-        filename: file.filename,
-        originalname: file.originalname,
-        path: file.path,
-        size: file.size,
-        mimetype: file.mimetype,
-      }
-    ))
+    attachments = req.files.map((file) => ({
+      filename: file.filename,
+      originalname: file.originalname,
+      path: file.path,
+      size: file.size,
+      mimetype: file.mimetype,
+    }));
   }
 
   const post = await models.Post.create({
@@ -61,20 +59,20 @@ exports.createPost = async (req, res) => {
   res.status(201).json({ message: "게시글 작성이 성공했습니다.", data: post });
 };
 
-exports.getAllPosts = async (req, res) => {
+const getAllPosts = async (req, res) => {
   const posts = await models.Post.findAll();
   if (!posts) return res.status(404).json({ message: "게시글 목록 조회 실패" });
   res.status(200).json({ message: "게시글 목록 조회 성공!", data: posts });
 };
 
-exports.getPost = async (req, res) => {
+const getPost = async (req, res) => {
   const { id } = req.params;
   const post = await models.Post.findByPk(id);
   if (!post) return res.status(400).json({ message: "해당 게시글 조회 실패!" });
   res.status(200).json({ message: "해당 게시글 조회 성공!", data: post });
 };
 
-exports.updatePost = async (req, res) => {
+const updatePost = async (req, res) => {
   const { id } = req.params;
   const post = await models.Post.findByPk(id);
   const { title, content } = req.body;
@@ -89,7 +87,9 @@ exports.updatePost = async (req, res) => {
   res.status(200).json({ message: "해당 게시글 수정 완료!", data: post });
 };
 
-exports.updateViewCont = async (req, res) => {
+// 첨부파일 수정
+
+const updateViewCont = async (req, res) => {
   const { id } = req.params;
   const post = await models.Post.findByPk(id);
   if (!post)
@@ -100,7 +100,7 @@ exports.updateViewCont = async (req, res) => {
   res.status(200).json({ message: "ok", data: updatedPost });
 };
 
-exports.deletePost = async (req, res) => {
+const deletePost = async (req, res) => {
   const { id } = req.params;
   const result = await models.Post.destroy({
     where: {
@@ -109,4 +109,13 @@ exports.deletePost = async (req, res) => {
   });
   if (result > 0) return res.sendStatus(204);
   else res.status(400).json({ message: "해당 게시글 삭제에 실패했습니다." });
+};
+
+module.exports = {
+  createPost,
+  getAllPosts,
+  getPost,
+  updatePost,
+  updateViewCont,
+  deletePost,
 };
