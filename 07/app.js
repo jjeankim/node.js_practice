@@ -1,4 +1,8 @@
 const express = require("express");
+const swqggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
+const path = require("path");
+
 const models = require("./models");
 const noteRouter = require("./routes/notesRoute");
 const postRouter = require("./routes/postRoute");
@@ -13,6 +17,9 @@ const app = express();
 app.use(logging);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const swaggerDocument = YAML.load(path.join(__dirname, "swagger.yaml"));
+app.use("/api-docs", swqggerUi.serve, swqggerUi.setup(swaggerDocument));
 
 app.use("/notes", noteRouter);
 app.use("/posts", postRouter);

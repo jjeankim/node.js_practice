@@ -1,0 +1,131 @@
+openapi: 3.0.4
+info:
+  title: Auth API
+  version: 1.0.0
+  description: 사용자 회원가입 및 로그인 API 문서입니다.
+
+servers:
+  - url: http://localhost:3000
+    description: Local server
+
+tags:
+  - name: Auth
+    description: 인증 관련 API
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: 회원가입
+      description: 이메일, 이름, 비밀번호를 받아 새로운 사용자를 등록합니다.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - name
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                name:
+                  type: string
+                  example: 홍길동
+                password:
+                  type: string
+                  format: password
+                  example: mysecurepassword
+      responses:
+        '201':
+          description: 회원가입 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: ok
+                  data:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: 요청 오류
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: 로그인
+      description: 이메일과 비밀번호를 입력받아 JWT 액세스 토큰을 반환합니다.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  format: password
+                  example: mysecurepassword
+      responses:
+        '200':
+          description: 로그인 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: ok
+                  accessToken:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        '400':
+          description: 이메일 또는 비밀번호 오류
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid email and password
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        name:
+          type: string
+          example: 홍길동
+        createdAt:
+          type: string
+          format: date-time
+          example: 2024-06-27T12:34:56.000Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2024-06-27T12:34:56.000Z
