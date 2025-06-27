@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const generateAccessToken = (user) => {
   return jwt.sign(
     {
-      id: user.name,
+      id:user.id,
       email: user.email, // 페이로드 (유저 정보)
     },
     "access_token",      // 서명 키

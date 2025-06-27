@@ -2,58 +2,59 @@ const models = require("../models");
 
 const createPost = async (req, res) => {
   const { title, content } = req.body;
-  // let filename = req.file ? req.file.filename : null;
+  let filename = req.file ? req.file.filename : null;
+console.log(req.user);
 
-  // filename = `/downloads/${filename}`;
+  filename = `/downloads/${filename}`;
 
-  let user = await models.User.findOne({
-    where: {
-      email: "a@test.com",
-    },
-  });
+  // let user = await models.User.findOne({
+  //   where: {
+  //     email: "a@test.com",
+  //   },
+  // });
 
-  if (!user) {
-    user = await models.User.create({
-      name: "무직타이거",
-      email: "muziktiger@email.com",
-      password: "muziktiger",
-    });
-  }
+  // if (!user) {
+  //   user = await models.User.create({
+  //     name: "무직타이거",
+  //     email: "muziktiger@email.com",
+  //     password: "muziktiger",
+  //   });
+  // }
   let attachments = [];
 
-  // if (req.file) {
-  //   attachments.push({
-  //     filename: req.file.filename,
-  //     originalname: req.file.originalname,
-  //     path: req.file.path,
-  //     size: req.file.size,
-  //     mimetype: req.file.mimetype,
-  //   });
-  // } else if (req.files && req.files.length > 0) {
-  //   attachments = req.files.map((file) => ({
-  //     filename: file.filename,
-  //     orginalname: file.orginalname,
-  //     path: file.path,
-  //     size: file.size,
-  //     mimetype: file.mimetype,
-  //   }));
-  // }
-  if (req.files && res.files.length > 0) {
+  if (req.file) {
+    attachments.push({
+      filename: req.file.filename,
+      originalname: req.file.originalname,
+      path: req.file.path,
+      size: req.file.size,
+      mimetype: req.file.mimetype,
+    });
+  } else if (req.files && req.files.length > 0) {
     attachments = req.files.map((file) => ({
       filename: file.filename,
-      originalname: file.originalname,
+      orginalname: file.orginalname,
       path: file.path,
       size: file.size,
       mimetype: file.mimetype,
     }));
   }
+  // if (req.files && res.files.length > 0) {
+  //   attachments = req.files.map((file) => ({
+  //     filename: file.filename,
+  //     originalname: file.originalname,
+  //     path: file.path,
+  //     size: file.size,
+  //     mimetype: file.mimetype,  
+  //   }));
+  // }
 
   const post = await models.Post.create({
     title,
     content,
     // filename,
     attachments,
-    authorId: user.id,
+    authorId: req.user.id,
   });
 
   res.status(201).json({ message: "게시글 작성이 성공했습니다.", data: post });
